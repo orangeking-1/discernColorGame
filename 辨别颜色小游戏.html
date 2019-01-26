@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        .box{
+            width: 600px;
+            /*height: 700px;*/
+            margin:0 auto;
+            position: relative;
+
+        }
+        .time{
+            height: 50px;
+            border:1px solid #ccc;
+            overflow: hidden;
+        }
+        .gotime{
+            height: 50px;
+            width: 600px;
+            background-color: #cccccc;
+            position: relative;
+            /*left: 50px;*/
+        }
+        .con{
+            width: 600px;
+            height: 600px;
+            background-color: white;
+        }
+        .xia{
+            border:1px solid #cccccc;
+            background-color: pink;
+            width: 300px;
+            float: left;
+        }
+        .bor{
+            border: 1px solid #cccccc;
+        }
+        .dianwo{
+            width: 600px;
+            height: 600px;
+            font-size: 100px;
+            color: red;
+            background-color: green;
+            text-align: center;
+            line-height: 600px;
+        }
+        .showhide{
+            width: 100px;
+            height: 100px;
+            position: absolute;
+            left: 620px;
+            top: 0px;
+            background-color: chartreuse;
+            color: red;
+            font-size: 30px;
+            text-align: center;
+            line-height: 100px;
+        }
+    </style>
+</head>
+<body>
+<div class="box" id="box">
+    <div class="time">
+        <div class="gotime" id="gotime"></div>
+    </div>
+    <div class="con bor" id="con">
+        <div class="dianwo">
+            双击我！
+        </div>
+    </div>
+    <div class="showhide" id="showhide"></div>
+</div>
+
+
+<script>
+
+    do{
+        var dif=parseInt(prompt("难度为 1-4，请输入你想要的难度"))+5;
+    }while(dif<5 || dif>9);
+
+
+
+    alert("请点击下面不同于其他的颜色的方格");
+
+
+
+    //这种方法只适用于正方形小方块平铺,没有设置con的高
+
+    var con=document.getElementById("con");
+    var box=document.getElementById("box");
+    var showhide=document.getElementById("showhide");
+
+
+    //记录答对的次数
+    var rightNum=0;
+
+
+    var m= 1;
+
+
+    var gotime = document.getElementById("gotime");
+    var timer = null;
+    var leftPos = 0;
+
+
+
+    con.onclick= function () {
+
+        //定时器
+        clearInterval(timer);
+
+
+
+        timer = setInterval(function () {
+            //先让预设位置leftPos增加
+            leftPos += 0.3;
+            //让box走到200就停下来
+
+
+            if (leftPos <= 600 ) {
+                //将变化后的值设置给box的left属性
+                gotime.style.left = leftPos + "px";
+
+
+
+                    //主要代码
+                con.onclick= function () {
+
+                    //动态追加小方块
+
+
+                    m++;
+                    var allsquare=Math.pow(m,2);//根据x方向上的个数，推断一共平铺的小方块的个数
+
+                    //删除原来所有的xiao方块
+                    con.innerHTML="";
+
+                    var xiao=document.getElementsByClassName("xia");
+                    for(var j=0; j<xiao.length; j++){
+    //            con.removeChild(xiao[j]);
+                        con.innerHTML="";
+                        j--;
+                    }
+
+                    //随机一个数
+
+                    var sj= SJ();
+    //        alert(sj);
+
+                    var r=SJC();
+                    var g=SJC();
+                    var b=SJC();
+
+                    for(var i=0; i<allsquare; i++){
+
+                        var xiao=document.createElement("div");
+                        xiao.setAttribute("class","xia");
+
+                        con.appendChild(xiao);
+                        xiao.style.height=(600/m-2)+"px";
+                        xiao.style.width=(600/m-2)+"px";
+
+
+
+                        //随机一个颜色
+                        if(i==sj){
+                            xiao.style.backgroundColor="rgba("+r+","+g+","+b+",."+dif+")";
+                        }else{
+                            xiao.style.backgroundColor="rgb("+r+","+g+","+b+")";
+                        }
+
+
+
+                    }
+
+                    //点击事件
+                    var xiaocolor=document.getElementsByClassName("xia");
+
+                    for(var k=0; k<xiaocolor.length; k++){
+                        xiaocolor[sj].onclick= function () {
+
+                            //设置一个定时器，限制它的弹出事件
+                                var  alertSetTime=setInterval(function () {
+                                    rightNum++;
+                                showhide.innerText=""+rightNum;
+
+                            },100);
+
+                            setTimeout(function(){
+
+                                clearInterval(alertSetTime);
+                            },110);
+
+
+
+                        }
+                    }
+
+
+
+
+                    //随机一个数,为其中一个该颜色
+                    function SJ(){
+                        return parseInt(Math.random()*allsquare);
+                    }
+
+                    //随机一个颜色rgb的值
+                    function SJC(){
+                        return parseInt(Math.random()*150);
+                    }
+
+
+
+
+                }
+
+
+
+
+
+
+            } else {
+                //停下来，清除定时器
+                clearInterval(timer);
+
+                box.removeChild(con);
+                alert("Game Over");
+                alert("你答对了"+rightNum+"题");
+
+            }
+        }, 10);
+
+
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+</script>
+
+</body>
+</html>
